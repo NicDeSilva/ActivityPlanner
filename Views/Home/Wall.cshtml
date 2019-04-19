@@ -1,0 +1,57 @@
+@model Dashboard
+<partial name="Navbar"/>
+<h1>Welcome @Model.User.Name</h1>
+
+@if(@TempData.ContainsKey("conflict") && (bool)@TempData["conflict"] == true)
+{
+    <span style="color: red;">Scheduling conflict! Could not join.</span>
+}
+
+<table class="table">
+    <thead class="thead-dark">
+        <th scope="col">Activity</th>
+        <th scope="col">Date and Time</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Event Coordinator</th>
+        <th scope="col"># of Participants</th>
+        <th scope="col">Actions</th>
+    </thead>
+    <tbody>
+@foreach (var act in Model.Activities)
+{       
+    <tr>
+        <td> <a href="/activity/@act.Id"> @act.Title</a></td>
+        <td>@act.Date.ToString("MM/dd") @act.Date.ToString("hh:mm tt") </td>
+        @if(@act.Duration.TotalHours < 1){<td>@act.Duration.TotalMinutes Minutes</td>}
+        else if(@act.Duration.TotalHours > 24){<td>@act.Duration.TotalDays Days</td>}
+        else{<td>@act.Duration.TotalHours Hours</td>}
+        <td>@act.Creator.Name</td>
+        <td>@act.Guests.Count</td>
+        <td>
+            @if(@act.Creator.Id == Model.User.Id){
+                <form action="/delete/@act.Id" method="POST">
+                <button class="btn btn-danger">Delete</button>
+                </form>
+            }
+            else
+            {
+                @if(!(act.Guests.Any(plan => plan.User == Model.User))){
+                <form action="/rsvp/@act.Id" method="POST">
+                <button class="btn btn-success">Join</button>
+                </form>
+                }
+                else
+                {
+                <form action="/unrsvp/@act.Id" method="POST">
+                <button class="btn btn-warning">Leave</button>
+                </form>
+                } 
+            }
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
+
+<br>
+<a href="/new"><button class="btn btn-primary">Add New Activity</button></a>

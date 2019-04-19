@@ -1,0 +1,38 @@
+@model Dashboard
+
+<partial name="Navbar"/>
+
+<h1>@Model.Activities[0].Title</h1>
+
+<p>Event Coordinator: @Model.Activities[0].Creator.Name</p>
+<p>Description: @Model.Activities[0].Description</p>
+<p>Participants:</p>
+<ul>
+    @foreach (var guest in Model.Activities[0].Guests)
+    {
+        <li>
+            @guest.User.Name
+        </li>
+    }
+</ul>
+
+<br>
+@if(Model.Activities[0].Creator.Id == Model.User.Id){
+                <form action="/delete/@Model.Activities[0].Id" method="POST">
+                <button class="btn btn-danger">Delete</button>
+                </form>
+            }
+            else
+            {
+                @if(!(Model.Activities[0].Guests.Any(plan => plan.User == Model.User))){
+                <form action="/rsvp/@Model.Activities[0].Id" method="POST">
+                <button class="btn btn-success">Join</button>
+                </form>
+                }
+                else
+                {
+                <form action="/unrsvp/@Model.Activities[0].Id" method="POST">
+                <button class="btn btn-warning">Leave</button>
+                </form>
+                } 
+            }

@@ -1,0 +1,43 @@
+@model Activ
+<partial name="Navbar"/>
+
+<h1>Create an Activity</h1>
+<form asp-action="SubmitActivity" asp-controller="Home">
+    <div class="form-group">
+        <label asp-for="Title">Title:</label>
+        <span asp-validation-for="Title"></span>
+        <input asp-for="Title">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Time">Time:</label>
+        <span asp-validation-for="Time"></span>
+        <input asp-for="Time">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Date">Date:</label>
+        <span asp-validation-for="Date"></span>
+        <input asp-for="Date">  
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Duration">Duration:</label>
+        <span asp-validation-for="TimeUnit"></span>
+        <span asp-validation-for="Duration"></span>
+        <input asp-for="Duration">
+        <select asp-for="TimeUnit">
+            <option value="minutes">Minutes</option>
+            <option value="hours">Hours</option>
+            <option value="days">Days</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description">Desription:</label>
+        <span asp-validation-for="Description"></span>
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <button class="btn btn-primary">Create Activity</button>
+</form>
