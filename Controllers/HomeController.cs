@@ -71,18 +71,29 @@ namespace belt.Controllers
 
                         DateTime startNew;
                         DateTime endNew;
+                if(sub.TimeUnit == "hours")
+                {
+                    sub.Duration = sub.Duration /24;
+                }
+                else if(sub.TimeUnit == "minutes")
+                {
+                    sub.Duration = sub.Duration /(60*24);
+                }
                     foreach (var plan in loggedIn.plans)
                     {
                         startOrig = plan.Activity.Date;
                         endOrig = plan.Activity.Date + plan.Activity.Duration;
 
-                        startNew = sub.Date;
-                        endNew = sub.Date + sub.Duration;
-                        System.Console.WriteLine($"**** Is {startNew} > {endOrig} or {startOrig} > {endNew}???");
-                        if(!(startNew.CompareTo(endOrig) > 0) || !(endNew.CompareTo(startOrig) > 0))
+                        startNew = sub.Date.Date + sub.Time;
+                        endNew = sub.Date.Date + sub.Time + sub.Duration;
+                        System.Console.WriteLine($"**** Is new ending {endNew} before the old start {startOrig} or is the new start {startNew} after the old end {endOrig}???");
+                        System.Console.WriteLine("endNew.CompareTo(startOrig) < 0 "+endNew.CompareTo(startOrig));
+                        System.Console.WriteLine("startNew.CompareTo(endOrig) > 0 "+startNew.CompareTo(endOrig));
+                        if((endNew.CompareTo(startOrig) < 0) || (startNew.CompareTo(endOrig) > 0))
                         {
-                            ModelState.AddModelError("Date", "Schedule conflict with your events!");
+                            System.Console.WriteLine("pass");
                         }
+                        else{ModelState.AddModelError("Date", "Schedule conflict with your events!");}
                     }
             if(sub.Date+sub.Time <= DateTime.Now)
             {
@@ -97,14 +108,6 @@ namespace belt.Controllers
                 Plan newPlan = new Plan();
                 newPlan.User = loggedIn;
                 newPlan.Activity = sub;
-                if(newPlan.Activity.TimeUnit == "hours")
-                {
-                    newPlan.Activity.Duration = newPlan.Activity.Duration /24;
-                }
-                else if(newPlan.Activity.TimeUnit == "minutes")
-                {
-                    newPlan.Activity.Duration = newPlan.Activity.Duration /(60*24);
-                }
                 newPlan.Activity.Date = newPlan.Activity.Date.Date + sub.Time;
                 newPlan.Activity.Creator = loggedIn;
                 newPlan.Activity.Guests = new List<Plan>();
@@ -165,6 +168,7 @@ namespace belt.Controllers
 
                         DateTime startNew;
                         DateTime endNew;
+
                     foreach (var plan in loggedIn.plans)
                     {
                         startOrig = plan.Activity.Date;
@@ -172,13 +176,18 @@ namespace belt.Controllers
 
                         startNew = specActivity.Date;
                         endNew = specActivity.Date + specActivity.Duration;
-                        System.Console.WriteLine($"**** Is {startNew} > {endOrig} or {startOrig} > {endNew}???");
-                        if(!(startNew.CompareTo(endOrig) > 0) || !(endNew.CompareTo(startOrig) > 0))
+                        System.Console.WriteLine($"**** Is new ending {endNew} before the old start {startOrig} or is the new start {startNew} after the old end {endOrig}???");
+                        System.Console.WriteLine("endNew.CompareTo(startOrig) < 0 "+endNew.CompareTo(startOrig));
+                        System.Console.WriteLine("startNew.CompareTo(endOrig) > 0 "+startNew.CompareTo(endOrig));
+                        if((endNew.CompareTo(startOrig) < 0) || (startNew.CompareTo(endOrig) > 0))
                         {
-                            System.Console.WriteLine($"Yes");
+                            System.Console.WriteLine("pass");
+                        }
+                        else{
+                            System.Console.WriteLine($"conflict");
                             TempData["conflict"] = true;
                             return RedirectToAction("Wall");
-                        }
+                            }
                     }
 
                 Plan newPlan = new Plan();

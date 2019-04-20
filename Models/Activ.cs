@@ -16,7 +16,7 @@ namespace belt.Models
         public string Description {get; set;}
 
         [Required(ErrorMessage = "You must provide a date!")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date, ErrorMessage = "You must provide a date!")]
         public DateTime Date {get; set;}
 
         [Required(ErrorMessage = "You must provide a time!")]
